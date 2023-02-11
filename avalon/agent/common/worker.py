@@ -116,7 +116,7 @@ class AsyncRolloutManager:
         if self.params.resume_from:
             checkpoint_path = get_checkpoint_file(self.params.resume_from)
             model.load_state_dict(torch.load(checkpoint_path, map_location=self.params.train_device))
-            logger.info("RESUMED MODEL FROM CHECKPOINT")
+            logger.info(f"RESUMED MODEL FROM CHECKPOINT {checkpoint_path}")
 
         # You cannot have initialized cuda in the parent process before forking for this to work.
         model = model.to(rollout_device)

@@ -60,7 +60,7 @@ class _BridgeKillSwitch:
         self,
         godot_process: InteractiveGodotProcess,
         check_period_seconds: float = 5.0,
-        default_timeout: float = 30.0,
+        default_timeout: float = 600.0,
     ) -> None:
         self._kill_time: float = math.inf
         self._godot_process = godot_process
@@ -148,8 +148,8 @@ class GodotEnvBridge(Generic[ActionType]):
         cls,
         process: InteractiveGodotProcess,
         screen_resolution: Tuple[int, int],
-        build_timeout_seconds: float = 30.0,
-        close_timeout_seconds: float = 30.0,
+        build_timeout_seconds: float = 600.0,
+        close_timeout_seconds: float = 600.0,
     ) -> "GodotEnvBridge":
         """Create pipes while starting process so that the bridge doesn't block.
 

@@ -12,6 +12,7 @@ from typing import List
 from typing import Optional
 from typing import Protocol
 
+import os
 import attr
 import torch
 import wandb
@@ -32,7 +33,6 @@ from avalon.agent.common.types import Algorithm
 from avalon.agent.common.types import BatchSequenceData
 from avalon.agent.common.types import ParamsType
 from avalon.agent.common.types import StepData
-from avalon.agent.common.util import get_checkpoint_file
 from avalon.agent.common.util import pack_1d_list
 from avalon.agent.common.util import postprocess_uint8_to_float
 from avalon.agent.common.worker import AsyncRolloutManager
@@ -139,9 +139,12 @@ class Trainer(ABC, Generic[ParamsType]):
         algorithm = algorithm_cls(self.params, self.params.observation_space, self.params.action_space)
 
         if self.params.resume_from:
-            checkpoint_path = get_checkpoint_file(self.params.resume_from)
-            algorithm.load_state_dict(torch.load(checkpoint_path, map_location=self.params.train_device))
-            logger.info("RESUMED MODEL FROM CHECKPOINT")
+            model_path = os.getcwd() + "/models/" + self.params.resume_from
+            if os.path.exists(model_path):
+                algorithm.load_state_dict(torch.load(model_path))
+            #checkpoint_path = get_checkpoint_file(self.params.resume_from)
+            #algorithm.load_state_dict(torch.load(checkpoint_path, map_location=self.params.train_device))
+            logger.info(f"RESUMED MODEL FROM CHECKPOINT {model_path}")
 
         algorithm = algorithm.to(self.params.train_device)
 
@@ -162,7 +165,7 @@ class Trainer(ABC, Generic[ParamsType]):
             if self.env_step >= self.params.total_env_steps:
                 break
 
-        self.checkpoint(filename="final.pt")
+        self.checkpoint(filename=self.params.resume_from)
 
     @property
     def frames_per_batch(self):
@@ -212,8 +215,8 @@ class Trainer(ABC, Generic[ParamsType]):
 
     def checkpoint(self, filename: Optional[str] = None) -> None:
         if not filename:
-            filename = f"model_{self.i}.pt"
-        model_filename = Path(wandb.run.dir) / filename  # type: ignore
+            filename = f"avalon_ppo_model_{self.i}.pt"
+        model_filename = Path(os.getcwd() + "/models") / filename  # type: ignore
         torch.save(self.algorithm.state_dict(), model_filename)
         wandb.save(str(model_filename), policy="now")  # type: ignore
         wandb_lib.log_scalar("last_checkpoint", self.i, self.i, freq=1)

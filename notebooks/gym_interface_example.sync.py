@@ -37,7 +37,7 @@ display_video(observations, fps=10)
 # %%
 # We can also generate and load a world manually
 
-OUTPUT_FOLDER = pathlib.Path("./output/").absolute()
+OUTPUT_FOLDER = pathlib.Path("./outputs/").absolute()
 
 shutil.rmtree(OUTPUT_FOLDER, ignore_errors=True)
 params = generate_world(

@@ -88,7 +88,7 @@ class Params:
     # for example:
     #     wandb://untitled-ai/sf3189ytcfg/checkpoint.pt
     #     file:///home/user/runs/good_run/checkpoint.pt
-    resume_from: Optional[str] = None
+    resume_from: Optional[str] = 'file://~/git/avalon/avalon/models/avalon_ppo_model.pt'
     checkpoint_every: int = 10_000
     total_env_steps: int = 1_000_000
     discount = 0.98

@@ -1,3 +1,6 @@
+import os
+from datetime import datetime
+
 import attr
 import torch
 from loguru import logger
@@ -15,10 +18,10 @@ from avalon.common.log_utils import configure_remote_logger
 
 @attr.s(auto_attribs=True, frozen=True)
 class AvalonPPOParams(PPOParams):
-    total_env_steps: int = 50_000_000
+    total_env_steps: int = 1_000
     num_steps: int = 200
-    num_workers: int = 16
-    batch_size: int = 200 * 16  # must equal num_steps * num_workers
+    num_workers: int = 1
+    batch_size: int = 200 * 1  # must equal num_steps * num_workers
     ppo_epochs: int = 2
     discount: float = 0.99
     lam: float = 0.83
@@ -41,6 +44,7 @@ class AvalonPPOParams(PPOParams):
     log_freq_hist: int = 500
     log_freq_scalar: int = 50
     log_freq_media: int = 500
+    train_rollout_dir = os.getcwd() + "/output"
     checkpoint_every: int = 2500
 
     eval_exploration_mode: str = "eval"  # TODO: try explore here also
@@ -59,13 +63,17 @@ def run(params: AvalonPPOParams) -> None:
     trainer = OnPolicyTrainer(params)
     try:
         if params.is_training:
+            print("started training at {0}".format(datetime.now().strftime("%H:%M:%S")))
             trainer.train()
             trainer.shutdown()
             if trainer.train_storage:
                 trainer.train_storage.reset()
             torch.cuda.empty_cache()  # just for seeing what's going on
+            print("finished training at {0}".format(datetime.now().strftime("%H:%M:%S")))
         if params.is_testing:
+            print("started testing at {0}".format(datetime.now().strftime("%H:%M:%S")))
             test(trainer.params, trainer.algorithm, log=True)
+            print("finished testing at {0}".format(datetime.now().strftime("%H:%M:%S")))
 
     finally:
         trainer.shutdown()

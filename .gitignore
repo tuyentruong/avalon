@@ -220,6 +220,9 @@ standalone/*/datagen/godot/export_presets.cfg
 
 standalone/avalon/datagen/godot/playback/
 
+models/
+outputs/
+
 ############
 # wandb.ai #
 ############
