@@ -1,0 +1,13 @@
+name: avalon
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python==3.9.12
+  - openturns==1.20rc1
+  - pip
+  - pip:
+      - -r requirements_frozen.txt
+      - numba
+      - torch==1.13
+      - torchvision==0.13

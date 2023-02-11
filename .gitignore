@@ -219,3 +219,8 @@ standalone/ballworld/datagen/godot/*.apk
 standalone/*/datagen/godot/export_presets.cfg
 
 standalone/avalon/datagen/godot/playback/
+
+############
+# wandb.ai #
+############
+wandb/
