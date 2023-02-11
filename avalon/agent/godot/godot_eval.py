@@ -212,6 +212,10 @@ def test(params: Params, model: Algorithm, log: bool = True, log_extra: Optional
     # And use the n_episodes version for eval.
     multiprocessing_context = torch.multiprocessing.get_context("spawn")
     assert params.observation_space is not None
+    if torch.backends.mps.is_available():
+        device = torch.device("cpu")
+    else:
+        device = torch.device("cuda:0")
     player = RolloutManager(
         params=params,
         num_workers=num_workers,
@@ -219,7 +223,7 @@ def test(params: Params, model: Algorithm, log: bool = True, log_extra: Optional
         storage=test_storage,
         obs_space=params.observation_space,
         model=model,
-        rollout_device=torch.device("cuda:0"),
+        rollout_device=device,
         multiprocessing_context=multiprocessing_context,
     )
     test_storage.reset()

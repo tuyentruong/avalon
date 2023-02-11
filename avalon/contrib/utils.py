@@ -1,9 +1,9 @@
 import os
-import platform
 import random
 import re
 import shutil
 import subprocess
+import sys
 import time
 from contextlib import contextmanager
 from pathlib import Path
@@ -163,7 +163,7 @@ def run_local_command(
 
 
 def is_on_osx():
-    return platform.system().lower() == "darwin"
+    return sys.platform == "darwin"
 
 
 def create_temp_file_path(cleanup: bool = True) -> ContextManager[Path]:

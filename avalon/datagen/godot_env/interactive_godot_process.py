@@ -269,13 +269,15 @@ class InteractiveGodotProcess:
 
         Path(self.config_path).parent.mkdir(parents=True, exist_ok=True)
         with open(self.config_path, "w") as config_file:
-            config_file.write(_create_json_from_config(self.config))
+            json = _create_json_from_config(self.config)
+            #print(json)
+            config_file.write(json)
 
         extra_flags = ("--dev",) if self.is_dev_flag_added else tuple()
         godot_bash_args, godot_bash_env = self._get_godot_command(
             self.action_pipe_path, self.observation_pipe_path, extra_flags
         )
-        logger.debug(f"{self.prefix} process group: {' '.join(godot_bash_args)}' &>> {self.log_path}")
+        logger.debug(f"{self.prefix} process group: {' '.join(godot_bash_args)} &>> {self.log_path}")
 
         debug_bash_cmd = " ".join(self._get_godot_command(self.action_record_path, "/tmp/debug_output")[0])
         logger.debug(f"{self.prefix} TO DEBUG RUN: {debug_bash_cmd}")

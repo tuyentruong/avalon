@@ -114,4 +114,7 @@ class Params:
 
     @property
     def train_device(self) -> torch.device:
-        return torch.device(f"cuda:{self.train_gpu}")
+        if torch.backends.mps.is_available():
+            return torch.device("cpu")
+        else:
+            return torch.device(f"cuda:{self.train_gpu}")
