@@ -2,6 +2,8 @@
 set -e
 set -u
 
+PATH=/usr/local/homebrew/opt/coreutils/libexec/gnubin:$PATH # for realpath and stdbuf to work on Macs
+
 export GODOT_THREADS='0'
 export XDG_DATA_HOME='/tmp/xdg-godot'
 
